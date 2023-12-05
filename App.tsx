@@ -35,34 +35,6 @@ export default function App() {
     __startCamera();
   };
 
-  const takePicture = async () => {
-    if (cameraRef.current) {
-      try {
-        console.log(cameraRef.current);
-
-        const data = await cameraRef.current.takePictureAsync();
-
-        console.log("uri", data.uri);
-
-        setCapturedImage(data.uri);
-      } catch (error) {
-        console.log("Error taking picture", error);
-      }
-    }
-  };
-
-  const saveImage = async () => {
-    if (capturedImage) {
-      try {
-        await MediaLibrary.saveToLibraryAsync(capturedImage);
-        alert("Image saved to library");
-        setCapturedImage(null);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
   return (
     <View style={styles.container}>
       {/* <StatusBar style="auto" /> */}
@@ -70,74 +42,6 @@ export default function App() {
       {startCamera ? (
         <CustomCamera cameraRef={cameraRef} onCameraHandler={onCameraHandler} />
       ) : (
-        // <View style={styles.cameraContainer}>
-        //   {!capturedImage ? (
-        //     <Camera
-        //       style={styles.camera}
-        //       type={cameraType}
-        //       flashMode={flashMode}
-        //       ref={cameraRef}
-        //     >
-        //       <View
-        //         style={{
-        //           flexDirection: "row",
-        //           justifyContent: "space-between",
-        //           padding: 30,
-        //         }}
-        //       >
-        //         <Button
-        //           icon={"retweet"}
-        //           title="type"
-        //           onPress={() => {
-        //             setCameraType(
-        //               cameraType === CameraType.back
-        //                 ? CameraType.front
-        //                 : CameraType.back
-        //             );
-        //           }}
-        //         />
-        //         <Button
-        //           color={flashMode === FlashMode.off ? "gray" : "#f1f1f1"}
-        //           icon={"flash"}
-        //           title="flash"
-        //           onPress={() => {
-        //             setFlashMode(
-        //               flashMode === FlashMode.off ? FlashMode.on : FlashMode.off
-        //             );
-        //           }}
-        //         />
-        //       </View>
-        //     </Camera>
-        //   ) : (
-        //     <Image source={{ uri: capturedImage }} style={styles.camera} />
-        //   )}
-
-        //   <View>
-        //     {capturedImage ? (
-        //       <View
-        //         style={{
-        //           flexDirection: "row",
-        //           justifyContent: "space-between",
-        //           paddingHorizontal: 50,
-        //         }}
-        //       >
-        //         <Button
-        //           title={"Re-take"}
-        //           icon="retweet"
-        //           onPress={() => setCapturedImage(null)}
-        //         />
-        //         <Button title={"save"} icon="check" onPress={saveImage} />
-        //       </View>
-        //     ) : (
-        //       <Button
-        //         title="Take Picture"
-        //         onPress={takePicture}
-        //         icon="camera"
-        //         color="#f1f1f1"
-        //       />
-        //     )}
-        //   </View>
-        // </View>
         <View style={styles.imagePickerContainer}>
           {images.map((image, index) => (
             <ImagePreview

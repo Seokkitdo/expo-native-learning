@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   View,
+  Dimensions,
 } from "react-native";
 import Button from "./Button";
 import * as MediaLibrary from "expo-media-library";
@@ -16,11 +17,45 @@ interface CustomCameraProps {
   onCameraHandler: () => void;
 }
 
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
+function calculateCameraStyle(ratio: string) {
+  let height;
+
+  switch (ratio) {
+    case "4:3":
+      // 4:3 비율의 경우, 높이는 가로의 4/3입니다.
+      height = windowWidth * (4 / 3);
+      break;
+    case "16:9":
+      // 16:9 비율의 경우, 높이는 가로의 16/9입니다.
+      height = windowWidth * (16 / 9);
+      break;
+    default:
+      // 기본값으로 높이를 가로의 16/9 비율로 설정합니다.
+      height = windowWidth * (16 / 9);
+  }
+
+  // 높이가 화면을 넘어가지 않도록 합니다.
+  if (height > windowHeight) {
+    height = windowHeight;
+  }
+
+  return {
+    width: windowWidth,
+    height: height,
+  };
+}
+
 function CustomCamera({ cameraRef, onCameraHandler }: CustomCameraProps) {
   const [previewVisible, setPreviewVisible] = React.useState(false);
   const [capturedImage, setCapturedImage] = React.useState<any>(null);
   const [cameraType, setCameraType] = React.useState(CameraType.back);
   const [flashMode, setFlashMode] = React.useState<FlashMode>(FlashMode.off);
+  const [ratio, setRatio] = React.useState("4:3");
+
+  console.log(calculateCameraStyle(ratio));
 
   function toggleCameraType() {
     setCameraType((current) =>
@@ -30,6 +65,9 @@ function CustomCamera({ cameraRef, onCameraHandler }: CustomCameraProps) {
 
   const takePicture = async () => {
     if (cameraRef.current) {
+      const ratio = await cameraRef.current.getSupportedRatiosAsync();
+      console.log({ ratio });
+
       try {
         const data = await cameraRef.current.takePictureAsync();
 
@@ -57,7 +95,7 @@ function CustomCamera({ cameraRef, onCameraHandler }: CustomCameraProps) {
     <View style={styles.container}>
       {!capturedImage ? (
         <Camera
-          style={styles.camera}
+          style={[styles.camera, calculateCameraStyle(ratio)]}
           type={cameraType}
           flashMode={flashMode}
           ref={cameraRef}
@@ -113,12 +151,18 @@ function CustomCamera({ cameraRef, onCameraHandler }: CustomCameraProps) {
             <Button title={"save"} icon="check" onPress={saveImage} />
           </View>
         ) : (
-          <Button
-            title="Take Picture"
-            onPress={takePicture}
-            icon="camera"
-            color="#f1f1f1"
-          />
+          <View style={styles.pictureBtnContainer}>
+            <TouchableOpacity
+              onPress={takePicture}
+              style={styles.pictureBtn}
+            ></TouchableOpacity>
+          </View>
+          // <Button
+          //   title="Take Picture"
+          //   onPress={takePicture}
+          //   icon="camera"
+          //   color="#f1f1f1"
+          // />
         )}
       </View>
     </View>
@@ -133,8 +177,20 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   camera: {
-    flex: 1,
     borderRadius: 20,
+  },
+  pictureBtnContainer: {
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pictureBtn: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    borderWidth: 5,
+    borderColor: "#fff",
+    marginBottom: 25,
   },
 });
 

@@ -7,15 +7,11 @@ import MediaLibrary from "expo-media-library";
 
 import ImagePreview from "./components/ImagePreview";
 import CustomCamera from "./components/CustomCamera";
-import Button from "./components/Button";
+import Button from "./components/EntypeIconsButton";
 
 export default function App() {
   const [images, setImages] = React.useState([null, null, null, null]);
   const [startCamera, setStartCamera] = React.useState(false);
-  const [previewVisible, setPreviewVisible] = React.useState(false);
-  const [capturedImage, setCapturedImage] = React.useState<any>(null);
-  const [cameraType, setCameraType] = React.useState(CameraType.back);
-  const [flashMode, setFlashMode] = React.useState<FlashMode>(FlashMode.off);
 
   const cameraRef = React.useRef<Camera>(null);
 

@@ -9,8 +9,16 @@ import {
   View,
   Dimensions,
 } from "react-native";
-import Button from "./Button";
 import * as MediaLibrary from "expo-media-library";
+import {
+  Entypo,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
+import IoniconsButton from "./IonicButton";
+import EntypeIconsButton from "./EntypeIconsButton";
+import MaterialIconsButton from "./MaterialIconsButton";
 
 interface CustomCameraProps {
   cameraRef: any;
@@ -91,45 +99,37 @@ function CustomCamera({ cameraRef, onCameraHandler }: CustomCameraProps) {
     }
   };
 
+  const setFlashModeHandler = () => {
+    setFlashMode(flashMode === FlashMode.off ? FlashMode.on : FlashMode.off);
+  };
+
   return (
     <View style={styles.container}>
       {!capturedImage ? (
-        <Camera
-          style={[styles.camera, calculateCameraStyle(ratio)]}
-          type={cameraType}
-          flashMode={flashMode}
-          ref={cameraRef}
-        >
+        <View>
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-between",
-              padding: 30,
+              justifyContent: "center",
+              backgroundColor: "black",
+              paddingBottom: 15,
             }}
           >
-            <Button
-              icon={"retweet"}
-              title="type"
-              onPress={() => {
-                setCameraType(
-                  cameraType === CameraType.back
-                    ? CameraType.front
-                    : CameraType.back
-                );
-              }}
-            />
-            <Button
-              color={flashMode === FlashMode.off ? "gray" : "#f1f1f1"}
-              icon={"flash"}
-              title="flash"
-              onPress={() => {
-                setFlashMode(
-                  flashMode === FlashMode.off ? FlashMode.on : FlashMode.off
-                );
-              }}
+            <IoniconsButton
+              onPress={setFlashModeHandler}
+              name={flashMode === FlashMode.off ? "ios-flash-off" : "ios-flash"}
+              size={24}
+              color="#fff"
             />
           </View>
-        </Camera>
+
+          <Camera
+            style={[styles.camera, calculateCameraStyle(ratio)]}
+            type={cameraType}
+            flashMode={flashMode}
+            ref={cameraRef}
+          ></Camera>
+        </View>
       ) : (
         <Image source={{ uri: capturedImage }} style={styles.camera} />
       )}
@@ -143,26 +143,32 @@ function CustomCamera({ cameraRef, onCameraHandler }: CustomCameraProps) {
               paddingHorizontal: 50,
             }}
           >
-            <Button
+            <EntypeIconsButton
               title={"Re-take"}
               icon="retweet"
               onPress={() => setCapturedImage(null)}
             />
-            <Button title={"save"} icon="check" onPress={saveImage} />
+            <EntypeIconsButton
+              title={"save"}
+              icon="check"
+              onPress={saveImage}
+            />
           </View>
         ) : (
           <View style={styles.pictureBtnContainer}>
-            <TouchableOpacity
-              onPress={takePicture}
-              style={styles.pictureBtn}
-            ></TouchableOpacity>
+            <View style={{ flex: 1 }} />
+            <TouchableOpacity onPress={takePicture} style={styles.pictureBtn} />
+            <View style={{ flex: 1 }}>
+              <View></View>
+              <MaterialIconsButton
+                style={{ alignItems: "center" }}
+                color="#f1f1f1"
+                size={40}
+                onPress={toggleCameraType}
+                icon="flip-camera-android"
+              />
+            </View>
           </View>
-          // <Button
-          //   title="Take Picture"
-          //   onPress={takePicture}
-          //   icon="camera"
-          //   color="#f1f1f1"
-          // />
         )}
       </View>
     </View>
@@ -174,12 +180,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
     justifyContent: "center",
-    paddingBottom: 20,
+    paddingBottom: 70,
   },
   camera: {
     borderRadius: 20,
   },
   pictureBtnContainer: {
+    marginTop: 20,
+    flexDirection: "row",
     backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
@@ -190,7 +198,9 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     borderWidth: 5,
     borderColor: "#fff",
-    marginBottom: 25,
+    backgroundColor: "#fff",
+    justifyContent: "center", // 중앙에 위치시키기 위해 추가
+    alignItems: "center", // 중앙에 위치시키기 위해 추가
   },
 });
 

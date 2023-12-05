@@ -3,13 +3,14 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
 interface ButtonProps {
-  title: string;
+  title?: string;
   onPress?: () => void;
   icon: any;
   color?: string;
+  styleProp?: any;
 }
 
-export default function Button({ title, onPress, icon, color }: ButtonProps) {
+function EntypeIconsButton({ title, onPress, icon, color }: ButtonProps) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
       <Entypo name={icon} size={28} color={color ? color : "#f1f1f1"} />
@@ -17,6 +18,8 @@ export default function Button({ title, onPress, icon, color }: ButtonProps) {
     </TouchableOpacity>
   );
 }
+
+export default EntypeIconsButton;
 
 const styles = StyleSheet.create({
   button: {

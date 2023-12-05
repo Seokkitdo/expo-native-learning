@@ -19,10 +19,11 @@ import {
 import IoniconsButton from "./IonicButton";
 import EntypeIconsButton from "./EntypeIconsButton";
 import MaterialIconsButton from "./MaterialIconsButton";
+import CameraPreview from "./CameraPreview";
 
 interface CustomCameraProps {
   cameraRef: any;
-  onCameraHandler: () => void;
+  uploadPhoto: (newImage: any) => void;
 }
 
 const windowWidth = Dimensions.get("window").width;
@@ -42,7 +43,7 @@ function calculateCameraStyle(ratio: string) {
       break;
     default:
       // 기본값으로 높이를 가로의 16/9 비율로 설정합니다.
-      height = windowWidth * (16 / 9);
+      height = windowWidth * (4 / 3);
   }
 
   // 높이가 화면을 넘어가지 않도록 합니다.
@@ -56,14 +57,14 @@ function calculateCameraStyle(ratio: string) {
   };
 }
 
-function CustomCamera({ cameraRef, onCameraHandler }: CustomCameraProps) {
+function CustomCamera({ cameraRef, uploadPhoto }: CustomCameraProps) {
   const [previewVisible, setPreviewVisible] = React.useState(false);
   const [capturedImage, setCapturedImage] = React.useState<any>(null);
   const [cameraType, setCameraType] = React.useState(CameraType.back);
   const [flashMode, setFlashMode] = React.useState<FlashMode>(FlashMode.off);
   const [ratio, setRatio] = React.useState("4:3");
 
-  console.log(calculateCameraStyle(ratio));
+  console.log(capturedImage);
 
   function toggleCameraType() {
     setCameraType((current) =>
@@ -86,75 +87,99 @@ function CustomCamera({ cameraRef, onCameraHandler }: CustomCameraProps) {
     }
   };
 
-  const saveImage = async () => {
-    if (capturedImage) {
-      try {
-        await MediaLibrary.requestPermissionsAsync();
-        await MediaLibrary.saveToLibraryAsync(capturedImage);
-        alert("Image saved to library");
-        setCapturedImage(null);
-      } catch (error) {
-        console.log(error);
-      }
-    }
+  const uploadImage = () => {
+    uploadPhoto(capturedImage);
+    console.log("uploadImage");
   };
+
+  //// 이미지 갤러리에 저장
+  // const saveImage = async () => {
+  //   if (capturedImage) {
+  //     try {
+  //       await MediaLibrary.requestPermissionsAsync();
+  //       await MediaLibrary.saveToLibraryAsync(capturedImage);
+  //       alert("Image saved to library");
+  //       setCapturedImage(null);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // };
 
   const setFlashModeHandler = () => {
     setFlashMode(flashMode === FlashMode.off ? FlashMode.on : FlashMode.off);
   };
 
+  const retakePicture = () => {
+    setCapturedImage(null);
+  };
+
   return (
     <View style={styles.container}>
-      {!capturedImage ? (
-        <View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              backgroundColor: "black",
-              paddingBottom: 15,
-            }}
-          >
-            <IoniconsButton
-              onPress={setFlashModeHandler}
-              name={flashMode === FlashMode.off ? "ios-flash-off" : "ios-flash"}
-              size={24}
-              color="#fff"
-            />
+      {
+        !capturedImage && (
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                backgroundColor: "black",
+                paddingBottom: 15,
+              }}
+            >
+              <IoniconsButton
+                onPress={setFlashModeHandler}
+                name={
+                  flashMode === FlashMode.off ? "ios-flash-off" : "ios-flash"
+                }
+                size={24}
+                color="#fff"
+              />
+            </View>
+
+            <Camera
+              style={[styles.camera, calculateCameraStyle(ratio)]}
+              type={cameraType}
+              flashMode={flashMode}
+              ref={cameraRef}
+            ></Camera>
           </View>
+        )
+        //  : (
+        //   <View style={{ flex: 1 }}>
+        //     <Image source={{ uri: capturedImage }} style={styles.camera} />
+        //   </View>
+        // )}
+      }
 
-          <Camera
-            style={[styles.camera, calculateCameraStyle(ratio)]}
-            type={cameraType}
-            flashMode={flashMode}
-            ref={cameraRef}
-          ></Camera>
-        </View>
-      ) : (
-        <Image source={{ uri: capturedImage }} style={styles.camera} />
-      )}
-
-      <View>
+      <View style={{ flex: 1, width: "100%" }}>
         {capturedImage ? (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingHorizontal: 50,
-            }}
-          >
-            <EntypeIconsButton
-              title={"Re-take"}
-              icon="retweet"
-              onPress={() => setCapturedImage(null)}
-            />
-            <EntypeIconsButton
-              title={"save"}
-              icon="check"
-              onPress={saveImage}
-            />
-          </View>
+          <CameraPreview
+            photo={capturedImage}
+            retakePicture={retakePicture}
+            savePhoto={uploadImage}
+          />
         ) : (
+          //   <View
+          //     style={{
+          //       flexDirection: "row",
+          //       justifyContent: "space-between",
+          //       paddingHorizontal: 50,
+          //     }}
+          //   >
+          //     <EntypeIconsButton
+          //       title={"다시 시도"}
+          //       icon="retweet"
+          //       onPress={() => setCapturedImage(null)}
+          //     />
+          //     <EntypeIconsButton
+          //       title={"확인"}
+          //       icon="check"
+          //       onPress={saveImage}
+          //     />
+          //   </View>
+          // )
+
           <View style={styles.pictureBtnContainer}>
             <View style={{ flex: 1 }} />
             <TouchableOpacity onPress={takePicture} style={styles.pictureBtn} />

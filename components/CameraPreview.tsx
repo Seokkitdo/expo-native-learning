@@ -47,7 +47,7 @@ const CameraPreview = ({ photo, retakePicture, savePhoto }: any) => {
                   fontSize: 20,
                 }}
               >
-                Re-take
+                다시 촬영
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -66,7 +66,7 @@ const CameraPreview = ({ photo, retakePicture, savePhoto }: any) => {
                   fontSize: 20,
                 }}
               >
-                save photo
+                확인
               </Text>
             </TouchableOpacity>
           </View>

@@ -4,17 +4,17 @@ import * as ImagePicker from "expo-image-picker";
 
 interface ImagePickerProps {
   image: string | null;
-  onCameraHandler: () => void;
+  onPreviewImgHandler: () => void;
 }
 
 const ImagePreview: React.FC<ImagePickerProps> = ({
   image,
-  onCameraHandler,
+  onPreviewImgHandler,
 }) => {
   // ... 이전에 작성된 로직 (handlePress 함수 등)
 
   const handlePress = async () => {
-    onCameraHandler();
+    onPreviewImgHandler();
   };
 
   return (

@@ -23,7 +23,7 @@ import CameraPreview from "./CameraPreview";
 
 interface CustomCameraProps {
   cameraRef: any;
-  uploadPhoto: (newImage: any) => void;
+  uploadPhoto: (mode: string, newImage: any) => void;
 }
 
 const windowWidth = Dimensions.get("window").width;
@@ -88,8 +88,7 @@ function CustomCamera({ cameraRef, uploadPhoto }: CustomCameraProps) {
   };
 
   const uploadImage = () => {
-    uploadPhoto(capturedImage);
-    console.log("uploadImage");
+    uploadPhoto("camera", capturedImage);
   };
 
   //// 이미지 갤러리에 저장

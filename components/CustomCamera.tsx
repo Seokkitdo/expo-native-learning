@@ -1,25 +1,20 @@
 import { Camera, CameraType, FlashMode } from "expo-camera";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  ImageBackground,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  Image,
   View,
   Dimensions,
+  useWindowDimensions,
 } from "react-native";
-import * as MediaLibrary from "expo-media-library";
-import {
-  Entypo,
-  Ionicons,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+
+import * as ScreenOrientation from "expo-screen-orientation";
+import { DeviceMotion } from "expo-sensors";
+
 import IoniconsButton from "./IonicButton";
-import EntypeIconsButton from "./EntypeIconsButton";
 import MaterialIconsButton from "./MaterialIconsButton";
 import CameraPreview from "./CameraPreview";
+import useDeviceOrientation from "../hooks/useDeviceOrientation";
 
 interface CustomCameraProps {
   cameraRef: any;
@@ -36,6 +31,10 @@ function calculateCameraStyle(ratio: string) {
     case "4:3":
       // 4:3 비율의 경우, 높이는 가로의 4/3입니다.
       height = windowWidth * (4 / 3);
+      break;
+    case "3:4":
+      // 4:3 비율의 경우, 높이는 가로의 4/3입니다.
+      height = windowWidth * (3 / 4);
       break;
     case "16:9":
       // 16:9 비율의 경우, 높이는 가로의 16/9입니다.
@@ -58,13 +57,20 @@ function calculateCameraStyle(ratio: string) {
 }
 
 function CustomCamera({ cameraRef, uploadPhoto }: CustomCameraProps) {
-  const [previewVisible, setPreviewVisible] = React.useState(false);
   const [capturedImage, setCapturedImage] = React.useState<any>(null);
   const [cameraType, setCameraType] = React.useState(CameraType.back);
   const [flashMode, setFlashMode] = React.useState<FlashMode>(FlashMode.off);
   const [ratio, setRatio] = React.useState("4:3");
 
-  console.log(capturedImage);
+  // const { width, height } = useWindowDimensions();
+
+  // useEffect(() => {
+  //   console.log(width, height);
+  // }, [width, height]);
+
+  const orientation = useDeviceOrientation();
+
+  console.log({ orientation });
 
   function toggleCameraType() {
     setCameraType((current) =>
@@ -75,7 +81,7 @@ function CustomCamera({ cameraRef, uploadPhoto }: CustomCameraProps) {
   const takePicture = async () => {
     if (cameraRef.current) {
       const ratio = await cameraRef.current.getSupportedRatiosAsync();
-      console.log({ ratio });
+      console.log("ratio", ratio);
 
       try {
         const data = await cameraRef.current.takePictureAsync();
@@ -90,20 +96,6 @@ function CustomCamera({ cameraRef, uploadPhoto }: CustomCameraProps) {
   const uploadImage = () => {
     uploadPhoto("camera", capturedImage);
   };
-
-  //// 이미지 갤러리에 저장
-  // const saveImage = async () => {
-  //   if (capturedImage) {
-  //     try {
-  //       await MediaLibrary.requestPermissionsAsync();
-  //       await MediaLibrary.saveToLibraryAsync(capturedImage);
-  //       alert("Image saved to library");
-  //       setCapturedImage(null);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // };
 
   const setFlashModeHandler = () => {
     setFlashMode(flashMode === FlashMode.off ? FlashMode.on : FlashMode.off);
@@ -121,8 +113,9 @@ function CustomCamera({ cameraRef, uploadPhoto }: CustomCameraProps) {
             style={{
               flexDirection: "row",
               justifyContent: "center",
-              backgroundColor: "black",
-              paddingBottom: 15,
+              backgroundColor: "#000",
+              alignItems: "center",
+              paddingBottom: 12,
             }}
           >
             <IoniconsButton
@@ -134,8 +127,10 @@ function CustomCamera({ cameraRef, uploadPhoto }: CustomCameraProps) {
           </View>
 
           <Camera
+            // style={{ flex: 1, width: "100%" }}
             style={[styles.camera, calculateCameraStyle(ratio)]}
             type={cameraType}
+            ratio={ratio}
             flashMode={flashMode}
             ref={cameraRef}
           ></Camera>
@@ -176,7 +171,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
-    paddingBottom: 70,
+    paddingTop: 12,
+    paddingBottom: 24,
   },
   camera: {
     borderRadius: 20,

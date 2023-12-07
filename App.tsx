@@ -96,7 +96,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        {/* <StatusBar style="auto" /> */}
+        <StatusBar style="inverted" />
         {startCamera ? (
           <CustomCamera
             cameraRef={cameraRef}
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   },
   cameraContainer: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "blue",
     justifyContent: "center",
     paddingBottom: 20,
   },
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    paddingTop: Platform.OS === "android" ? 6 : 0,
+    paddingTop: Platform.OS === "android" ? 32 : 0,
   },
   camera: {
     flex: 1,

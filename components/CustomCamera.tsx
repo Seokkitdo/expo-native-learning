@@ -115,41 +115,32 @@ function CustomCamera({ cameraRef, uploadPhoto }: CustomCameraProps) {
 
   return (
     <View style={styles.container}>
-      {
-        !capturedImage && (
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                backgroundColor: "black",
-                paddingBottom: 15,
-              }}
-            >
-              <IoniconsButton
-                onPress={setFlashModeHandler}
-                name={
-                  flashMode === FlashMode.off ? "ios-flash-off" : "ios-flash"
-                }
-                size={24}
-                color="#fff"
-              />
-            </View>
-
-            <Camera
-              style={[styles.camera, calculateCameraStyle(ratio)]}
-              type={cameraType}
-              flashMode={flashMode}
-              ref={cameraRef}
-            ></Camera>
+      {!capturedImage && (
+        <View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              backgroundColor: "black",
+              paddingBottom: 15,
+            }}
+          >
+            <IoniconsButton
+              onPress={setFlashModeHandler}
+              name={flashMode === FlashMode.off ? "ios-flash-off" : "ios-flash"}
+              size={24}
+              color="#fff"
+            />
           </View>
-        )
-        //  : (
-        //   <View style={{ flex: 1 }}>
-        //     <Image source={{ uri: capturedImage }} style={styles.camera} />
-        //   </View>
-        // )}
-      }
+
+          <Camera
+            style={[styles.camera, calculateCameraStyle(ratio)]}
+            type={cameraType}
+            flashMode={flashMode}
+            ref={cameraRef}
+          ></Camera>
+        </View>
+      )}
 
       <View style={{ flex: 1, width: "100%" }}>
         {capturedImage ? (
@@ -159,26 +150,6 @@ function CustomCamera({ cameraRef, uploadPhoto }: CustomCameraProps) {
             savePhoto={uploadImage}
           />
         ) : (
-          //   <View
-          //     style={{
-          //       flexDirection: "row",
-          //       justifyContent: "space-between",
-          //       paddingHorizontal: 50,
-          //     }}
-          //   >
-          //     <EntypeIconsButton
-          //       title={"다시 시도"}
-          //       icon="retweet"
-          //       onPress={() => setCapturedImage(null)}
-          //     />
-          //     <EntypeIconsButton
-          //       title={"확인"}
-          //       icon="check"
-          //       onPress={saveImage}
-          //     />
-          //   </View>
-          // )
-
           <View style={styles.pictureBtnContainer}>
             <View style={{ flex: 1 }} />
             <TouchableOpacity onPress={takePicture} style={styles.pictureBtn} />
@@ -204,6 +175,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
     justifyContent: "center",
+    alignItems: "center",
     paddingBottom: 70,
   },
   camera: {

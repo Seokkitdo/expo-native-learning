@@ -5,6 +5,7 @@ import {
   View,
   Animated,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -94,40 +95,40 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="auto" />
-      {startCamera ? (
-        <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea}>
+        {/* <StatusBar style="auto" /> */}
+        {startCamera ? (
           <CustomCamera
             cameraRef={cameraRef}
             uploadPhoto={pictureTakenHandler}
           />
-        </SafeAreaView>
-      ) : (
-        <View>
-          {/* <CustomCamera
+        ) : (
+          <View>
+            {/* <CustomCamera
             cameraRef={cameraRef}
             uploadPhoto={pictureTakenHandler}
           /> */}
-          <View style={styles.imagePickerContainer}>
-            {images.map((image, index) => (
-              <ImagePreview
-                key={index}
-                image={image}
-                onPreviewImgHandler={() => onPreviewImgHandler(index)}
-              />
-            ))}
+            <View style={styles.imagePickerContainer}>
+              {images.map((image, index) => (
+                <ImagePreview
+                  key={index}
+                  image={image}
+                  onPreviewImgHandler={() => onPreviewImgHandler(index)}
+                />
+              ))}
+            </View>
+            <CustomActionSheet
+              slideAnim={slideAnim}
+              isVisible={isVisible}
+              showActionSheet={showActionSheet}
+              hideActionSheet={hideActionSheet}
+              pictureTakenHandler={pictureTakenHandler}
+              hideModal={hideModal}
+              onCameraHandler={onCameraHandler}
+            />
           </View>
-          <CustomActionSheet
-            slideAnim={slideAnim}
-            isVisible={isVisible}
-            showActionSheet={showActionSheet}
-            hideActionSheet={hideActionSheet}
-            pictureTakenHandler={pictureTakenHandler}
-            hideModal={hideModal}
-            onCameraHandler={onCameraHandler}
-          />
-        </View>
-      )}
+        )}
+      </SafeAreaView>
     </View>
   );
 }
@@ -135,8 +136,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
+    backgroundColor: "#000",
+    // justifyContent: "center",
   },
   cameraContainer: {
     flex: 1,
@@ -152,8 +153,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    paddingTop: Platform.OS === "android" ? 6 : 0,
   },
   camera: {
     flex: 1,

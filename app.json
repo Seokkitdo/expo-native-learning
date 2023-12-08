@@ -31,14 +31,6 @@
         {
           "motionPermission": "Allow $(PRODUCT_NAME) to access your device motion."
         }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "flipper": true
-          }
-        }
       ]
     ],
     "ios": {
